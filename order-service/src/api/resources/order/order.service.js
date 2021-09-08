@@ -62,7 +62,6 @@ export const createOrder = async (params) => {
     };
 
     // Send order details to payment service
-
     const uri = `${process.env.PAYMENT_SERVICE_ENDPOINT}/payment`;
     const retries = 3;
     const backOff = 300;

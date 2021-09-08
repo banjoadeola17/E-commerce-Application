@@ -6,11 +6,11 @@ _Author:_ Adeola Banjo
 
 ## Features
 
-The user-service holds the customer data, and customers/ users can be queried from the service. For demonstration purposes, only one user is seeded into the database user faker for use. 
+* The user-service holds the customer data, and customers/ users can be queried from the service. For demonstration purposes, only one user is seeded into the database user faker for use. 
 Users also make orders from the user-service, and the order is sent to the 
 order-service which holds the order data. Orders made by the users can also be queried from the order -service. 
-The product-service on the other hand holds the product details. The product database is seeded with about twenty product samples which users can order from.
-The payment service accept the data conataining the key details to make payments transactions, processes it and publish the transaction details to the rabbitmq worker that saves the transaction details to the transaction databse.
+* The product-service on the other hand holds the product details. The product database is seeded with about twenty product samples which users can order from.
+* The payment service accept the data conataining the key details to make payments transactions, processes it and publish the transaction details to the rabbitmq worker that saves the transaction details to the transaction databse.
 
 ### Other Features
 
@@ -51,7 +51,7 @@ All the services are similar in structure and arrangement for ease of code manag
 
 ## Set - Up
 
-Clone the project from the github repository []
+Clone the project from the github repository [https://github.com/banjoadeola17/E-commerce-Application]
 
 ### Install Dependencies
 
@@ -204,17 +204,16 @@ For improvements to the to make the application better
 ### -------------------------------Side note--------------------------------------------------
 The environment variables are shared below;
 
-USER_SERVICE_USERNAME=user
-USER_SERVICE_PASSWORD=2nKxL825
-USER_SERVICE_ENDPOINT=http://localhost:1200
-ORDER_SERVICE_USERNAME=order
-ORDER_SERVICE_PASSWORD=dg6hY2QS
-ORDER_SERVICE_ENDPOINT=http://localhost:1202
-PRODUCT_SERVICE_USERNAME=product
-PRODUCT_SERVICE_PASSWORD=35SKq7TJ
-PRODUCT_SERVICE_ENDPOINT=http://localhost:1201
-PAYMENT_SERVICE_USERNAME=payment
-PAYMENT_SERVICE_PASSWORD=KfuWcDrd
-PAYMENT_SERVICE_ENDPOINT=http://localhost:1203
-MONGODB_URI=mongodb+srv://adeola17:Adevictor17@cluster0.eztdv.mongodb.net/product-service?retryWrites=true&w=majority
-PORT=1201
+_USER_SERVICE_USERNAME=user_
+_USER_SERVICE_PASSWORD=2nKxL825_
+_USER_SERVICE_ENDPOINT=http://localhost:1200_
+_ORDER_SERVICE_USERNAME=order_
+_ORDER_SERVICE_PASSWORD=dg6hY2QS_
+_ORDER_SERVICE_ENDPOINT=http://localhost:1202_
+_PRODUCT_SERVICE_USERNAME=product_
+_PRODUCT_SERVICE_PASSWORD=35SKq7TJ_
+_PRODUCT_SERVICE_ENDPOINT=http://localhost:1201_
+_PAYMENT_SERVICE_USERNAME=payment_
+_PAYMENT_SERVICE_PASSWORD=KfuWcDrd_
+_PAYMENT_SERVICE_ENDPOINT=http://localhost:1203_
+_MONGODB_URI=mongodb+srv://adeola17:Adevictor17@cluster0.eztdv.mongodb.net/product-service?retryWrites=true&w=majority_

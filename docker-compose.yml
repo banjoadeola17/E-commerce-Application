@@ -1,78 +1,92 @@
-version: '3.7'
+version: '3.8'
 
 services:
   mongodb:
-      image: mongo
-      restart: always
-      volumes:
-        # - ./src/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-        - data:/data/db
-      # env_file: 
-      #   - ./src/config/.env
-      environment:
-        MONGO_INITDB_DATABASE: db
-        MONGO_INITDB_ROOT_USERNAME: fisayo
-        MONGO_INITDB_ROOT_PASSWORD: secret
-  user_service:
-    container_name: user_service
-    build:
-      context: ./userService
-      dockerfile: Dockerfile
-    command: npm start
-    volumes: 
-      - ./userService/:/src
-      - /src/node_modules
-    environment: 
-      MONGO_ADDRESS: mongodb
-    ports:
-      - 8080:4000
-    depends_on:
-      - mongodb
-  task_service:
-    container_name: task_service
-    build:
-      context: ./task-service
-      dockerfile: Dockerfile
-    volumes:
-      - ./task-service/:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - 3000:3000
-      # - 9229:9229
-    command: npm run start
-    env_file:
-      - ./task-service/src/config/.env
-    # networks:
-    #   - webnet
-    depends_on:
-    #   - redis
-      - postgres
-  # redis:
-  #   container_name: redis
-  #   image: redis:5
-  #   networks:
-  #     - webnet
-  postgres:
-    container_name: postgres
+    image: mongo
     restart: always
-    image: postgres:12
-  #   networks:
-  #     - webnet
-    # environment:
-      # POSTGRES_HOST: postgres
-    #   POSTGRES_PASSWORD: ${DB_PASSWORD}
-    #   POSTGRES_USER: ${DB_USERNAME}
-    #   POSTGRES_DB: ${DB_DATABASE_NAME}
-    #   PG_DATA: /var/lib/postgresql/data
-    env_file:
-      - ./task-service/src/config/.env
-    ports:
-      - 5432:5432
     volumes:
-      - pgdata:/var/lib/postgresql/data
- 
-volumes:
-  data:
-  pgdata:
+      # - ./src/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - data:/data/db
+    # env_file:
+    #   - ./src/config/.env
+    environment:
+      MONGO_INITDB_DATABASE: db
+      MONGO_INITDB_ROOT_USERNAME: adeola17
+      MONGO_INITDB_ROOT_PASSWORD: Adevictor17
 
-  
+  rabbitmq:
+    image: rabbitmq
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq_nodejs
+
+  user-service:
+    container_name: user-service
+      build:
+        context: ./user-service
+        dockerfile: Dockerfile
+      command: npm run start
+      volumes:
+        - ./user-service/:/src
+        - /src/node_modules
+      environment:
+        MONGO_ADDRESS: mongodb
+      ports:
+        - 1200:1200
+      depends_on:
+        - mongodb
+
+  product-service:
+    container_name: product-service
+      build:
+        context: ./product-service
+        dockerfile: Dockerfile
+      command: npm run start
+      volumes:
+        - ./product-service/:/src
+        - /src/node_modules
+      environment:
+        MONGO_ADDRESS: mongodb
+      ports:
+        - 1201:1201
+      depends_on:
+        - mongodb
+
+  order-service:
+    container_name: order-service
+      build:
+        context: ./order-service
+        dockerfile: Dockerfile
+      command: npm run start
+      volumes:
+        - ./order-service/:/src
+        - /src/node_modules
+      environment:
+        MONGO_ADDRESS: mongodb
+      ports:
+        - 1202:1202
+      depends_on:
+        - mongodb
+
+  payment-service:
+    container_name: payment-service
+      build:
+        context: ./payment-service
+        dockerfile: Dockerfile
+      command: npm run start
+      volumes:
+        - ./payment-service/:/src
+        - /src/node_modules
+      environment:
+        MONGO_ADDRESS: mongodb
+      ports:
+        - 1203:1203
+      depends_on:
+        - mongodb
+        - rabbitmq
