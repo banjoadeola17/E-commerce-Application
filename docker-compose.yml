@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mongodb:
@@ -16,7 +16,7 @@ services:
 
   rabbitmq:
     image: rabbitmq
-    container_name: 'rabbitmq'
+    container_name: "rabbitmq"
     ports:
       - 5672:5672
       - 15672:15672
@@ -28,65 +28,68 @@ services:
 
   user-service:
     container_name: user-service
-      build:
-        context: ./user-service
-        dockerfile: Dockerfile
-      command: npm run start
-      volumes:
-        - ./user-service/:/src
-        - /src/node_modules
-      environment:
-        MONGO_ADDRESS: mongodb
-      ports:
-        - 1200:1200
-      depends_on:
-        - mongodb
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    command: npm run start
+    volumes:
+      - ./user-service/:/src
+      - /src/node_modules
+    environment:
+      MONGO_ADDRESS: mongodb
+    ports:
+      - 1200:1200
+    depends_on:
+      - mongodb
 
   product-service:
     container_name: product-service
-      build:
-        context: ./product-service
-        dockerfile: Dockerfile
-      command: npm run start
-      volumes:
-        - ./product-service/:/src
-        - /src/node_modules
-      environment:
-        MONGO_ADDRESS: mongodb
-      ports:
-        - 1201:1201
-      depends_on:
-        - mongodb
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    command: npm run start
+    volumes:
+      - ./product-service/:/src
+      - /src/node_modules
+    environment:
+      MONGO_ADDRESS: mongodb
+    ports:
+      - 1201:1201
+    depends_on:
+      - mongodb
 
   order-service:
     container_name: order-service
-      build:
-        context: ./order-service
-        dockerfile: Dockerfile
-      command: npm run start
-      volumes:
-        - ./order-service/:/src
-        - /src/node_modules
-      environment:
-        MONGO_ADDRESS: mongodb
-      ports:
-        - 1202:1202
-      depends_on:
-        - mongodb
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    command: npm run start
+    volumes:
+      - ./order-service/:/src
+      - /src/node_modules
+    environment:
+      MONGO_ADDRESS: mongodb
+    ports:
+      - 1202:1202
+    depends_on:
+      - mongodb
 
   payment-service:
     container_name: payment-service
-      build:
-        context: ./payment-service
-        dockerfile: Dockerfile
-      command: npm run start
-      volumes:
-        - ./payment-service/:/src
-        - /src/node_modules
-      environment:
-        MONGO_ADDRESS: mongodb
-      ports:
-        - 1203:1203
-      depends_on:
-        - mongodb
-        - rabbitmq
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    command: npm run start
+    volumes:
+      - ./payment-service/:/src
+      - /src/node_modules
+    environment:
+      MONGO_ADDRESS: mongodb
+    ports:
+      - 1203:1203
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  volumes:
+    db-data:
