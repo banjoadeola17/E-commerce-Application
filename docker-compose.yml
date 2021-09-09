@@ -11,10 +11,10 @@ services:
     #   - ./src/config/.env
     ports:
       - "27017:27017"
-  #    environment:
-  #      MONGO_INITDB_DATABASE: db
-  #      MONGO_INITDB_ROOT_USERNAME: adeola17
-  #      MONGO_INITDB_ROOT_PASSWORD: Adevictor17
+    environment:
+      MONGO_INITDB_DATABASE: db
+      MONGO_INITDB_ROOT_USERNAME: adeola17
+      MONGO_INITDB_ROOT_PASSWORD: Adevictor17
 
   rabbitmq:
     image: rabbitmq
@@ -25,8 +25,8 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-#    networks:
-#      - rabbitmq_nodejs
+  #    networks:
+  #      - rabbitmq_nodejs
 
   user-service:
     container_name: user-service
