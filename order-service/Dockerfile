@@ -16,5 +16,5 @@ RUN npm run build
 # Bundle app source
 COPY . .
 
-EXPOSE 3500
+EXPOSE 1202
 CMD [ "node", "lib/index.js" ]

@@ -6,25 +6,27 @@ services:
     restart: always
     volumes:
       # - ./src/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - data:/data/db
+      - "./mongo/db:/data/db"
     # env_file:
     #   - ./src/config/.env
-    environment:
-      MONGO_INITDB_DATABASE: db
-      MONGO_INITDB_ROOT_USERNAME: adeola17
-      MONGO_INITDB_ROOT_PASSWORD: Adevictor17
+    ports:
+      - "27017:27017"
+  #    environment:
+  #      MONGO_INITDB_DATABASE: db
+  #      MONGO_INITDB_ROOT_USERNAME: adeola17
+  #      MONGO_INITDB_ROOT_PASSWORD: Adevictor17
 
   rabbitmq:
     image: rabbitmq
-    container_name: "rabbitmq"
+    container_name: "rabbit"
     ports:
-      - 5672:5672
-      - 15672:15672
+      - 5673:5672
+      - 15673:15672
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-    networks:
-      - rabbitmq_nodejs
+#    networks:
+#      - rabbitmq_nodejs
 
   user-service:
     container_name: user-service
@@ -35,6 +37,8 @@ services:
     volumes:
       - ./user-service/:/src
       - /src/node_modules
+    #    env_file:
+    #      - ./src/.env
     environment:
       MONGO_ADDRESS: mongodb
     ports:
@@ -91,5 +95,9 @@ services:
       - mongodb
       - rabbitmq
 
-  volumes:
-    db-data:
+  #  volumes:
+  #    db-data:
+  #      driver: local
+#  networks:
+#    rabbitmq_nodejs:
+#      driver: bridge
