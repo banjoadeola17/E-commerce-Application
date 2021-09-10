@@ -82,7 +82,7 @@ Installing the dependences will install `mocha`, `sinon` and `chai`. Theses are 
 In the terminal of your root project, Run the following command
 
 ```bash
-npm run test
+npm run build && npm run integration-test
 ```
 
 ## END-POINT
