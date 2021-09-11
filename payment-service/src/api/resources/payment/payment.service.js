@@ -1,24 +1,29 @@
-import amqp from "amqplib"
+import amqp from "amqplib";
 import Joi from "joi";
 import { BAD_REQUEST, OK } from "../../modules/status";
 import { Transaction } from "./payment.model";
 import logger from "../../logger";
-import { consumeTransactionData } from "../queues/worker";
+import { worker } from "../queues/worker";
 
 let channel, connection;
 const queue = "transaction";
 
-const sendTransactionData = async () => {
+const connectionChannel = async () => {
   try {
-    connection = await amqp.connect('amqp://localhost:5672');
+    connection = await amqp.connect(process.env.RABBITMQ_URI);
     channel = await connection.createChannel();
-    await channel.assertQueue(queue);
-    console.log(`Waiting to send data to queue: ${queue}`)
-  } catch(err) {
-    console.log(err)
-  }}
+    await channel.assertQueue(queue, { durable: true });
+    console.log(`Connection created for queue: ${queue}`);
+  } catch (err) {
+    console.log(err);
+    const error = new Error(
+      "An error occured while connecting to raabitmq server"
+    );
+    throw error;
+  }
+};
 
-sendTransactionData()
+connectionChannel();
 
 export const sendData: Transaction = async (params) => {
   if (!params) {
@@ -28,9 +33,7 @@ export const sendData: Transaction = async (params) => {
     });
   }
 
-  logger.info(
-      `::: Request received as [${JSON.stringify(params)}] :::`
-  );
+  logger.info(`::: Request received as [${JSON.stringify(params)}] :::`);
 
   const validateSchema = validatePaymentParams({ params });
   if (validateSchema.error) {
@@ -41,21 +44,23 @@ export const sendData: Transaction = async (params) => {
   }
 
   try {
-    channel.sendToQueue(
-        queue, Buffer.from(JSON.stringify(params)),
-        {persistent: true}
-    );
+    channel.sendToQueue(queue, Buffer.from(JSON.stringify(params)), {
+      persistent: true,
+    });
 
-    let newTransaction
-    channel.consume(queue, (transactionData) => {
-      console.log("Consuming transaction data", transactionData);
-      const { customerId, productId, orderId, price } = JSON.parse(transactionData.content);
-      const data = { customerId, productId, orderId, price }
-      console.log(data)
-      newTransaction = createTransaction(data);
+    let newTransaction;
+    channel.consume(queue, (data) => {
+      console.log("Consuming transaction data", data);
+      const { customerId, productId, orderId, price } = JSON.parse(
+        data.content
+      );
+
+      const transactionParams = { customerId, productId, orderId, price };
+      console.log("transactionParams", transactionParams);
+      newTransaction = createTransaction(transactionParams);
       channel.ack(data);
-      connection.close();
-      process.exit(0);
+      // connection.close();
+      // process.exit(0);
     });
 
     return Promise.resolve({
@@ -63,7 +68,10 @@ export const sendData: Transaction = async (params) => {
       data: newTransaction,
     });
   } catch (err) {
-    logger.error(`::: Product not found with error [${JSON.stringify(err)}] :::`);
+    logger.error(
+      `::: Product not found with error [${JSON.stringify(err)}] :::`
+    );
+
     return Promise.reject({
       statusCode: BAD_REQUEST,
       message: "Could not find product. Please try again",
@@ -76,11 +84,11 @@ export const createTransaction = (data) => {
     customerId: data.customerId,
     productId: data.productId,
     orderId: data.orderId,
-    price: data.price
+    price: data.price,
   });
   newTransaction.save();
   return newTransaction;
-}
+};
 
 const validatePaymentParams = ({ params }) => {
   const schema = Joi.object().keys({

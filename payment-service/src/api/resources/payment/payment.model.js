@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const schema = {
   customerId: String,
   productId: String,
-  orderId: Number,
+  orderId: String,
   price: String,
 };
 

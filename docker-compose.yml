@@ -11,10 +11,10 @@ services:
     #   - ./src/config/.env
     ports:
       - "27017:27017"
-#    environment:
-#      MONGO_INITDB_DATABASE: db
-#      MONGO_INITDB_ROOT_USERNAME: adeola17
-#      MONGO_INITDB_ROOT_PASSWORD: Adevictor17
+  #    environment:
+  #      MONGO_INITDB_DATABASE: db
+  #      MONGO_INITDB_ROOT_USERNAME: adeola17
+  #      MONGO_INITDB_ROOT_PASSWORD: Adevictor17
 
   rabbitmq:
     image: rabbitmq
@@ -37,8 +37,8 @@ services:
     volumes:
       - ./user-service/:/src
       - /src/node_modules
-    #    env_file:
-    #      - ./src/.env
+    env_file:
+      - ./user-service/.env
     environment:
       MONGO_ADDRESS: mongodb
     ports:
@@ -55,6 +55,8 @@ services:
     volumes:
       - ./product-service/:/src
       - /src/node_modules
+    env_file:
+      - ./product-service/.env
     environment:
       MONGO_ADDRESS: mongodb
     ports:
@@ -71,6 +73,8 @@ services:
     volumes:
       - ./order-service/:/src
       - /src/node_modules
+    env_file:
+      - ./order-service/.env
     environment:
       MONGO_ADDRESS: mongodb
     ports:
@@ -87,6 +91,8 @@ services:
     volumes:
       - ./payment-service/:/src
       - /src/node_modules
+    env_file:
+      - ./payment-service/.env
     environment:
       MONGO_ADDRESS: mongodb
     ports:

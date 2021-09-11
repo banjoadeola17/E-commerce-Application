@@ -37,7 +37,7 @@ export const postOrder = async (
       logger.error(`::: Request failed with error [${JSON.stringify(e)}] :::`);
       if (retries > 0) {
         setTimeout(() => {
-          return postOrder(uri, payLoad, retries - 1, backOff * 3);
+          return postOrder(url, payLoad, retries - 1, backOff * 3);
         }, backOff);
       } else {
         reject(
